@@ -149,7 +149,7 @@ server利用分隔符 ';:' 获取信息
 
 ### 开启服务器
 
-![image-20230507200448031](C:\Users\98735\AppData\Roaming\Typora\typora-user-images\image-20230507200448031.png)
+![image-20230507200448031](/ReadmePic/1.png)
 
 命令行运行server.py脚本 出现chat server starts running ..表示服务器正常运行
 
@@ -159,12 +159,12 @@ server利用分隔符 ';:' 获取信息
 
 蓝字为自己发送的信息 绿字为群聊模式下收到别的用户发送的信息
 
-![image-20230507200741909](C:\Users\98735\AppData\Roaming\Typora\typora-user-images\image-20230507200741909.png)
+![image-20230507200741909](/ReadmePic/2.png)
 
 #### 私聊模式
 
 在no.1的客户端选中列表中的no.2即可进入对no.2的私聊模式，聊天字体显示红色
 
-![image-20230507200908494](C:\Users\98735\AppData\Roaming\Typora\typora-user-images\image-20230507200908494.png)
+![image-20230507200908494](/ReadmePic/3.png)
 
 当选中'------Group chat-------'时，重新回到群聊模式
