@@ -17,7 +17,6 @@ user = ''
 listbox1 = ''  # 用于显示在线用户的列表框
 ii = 0  # 用于判断是开还是关闭列表框
 users = []  # 在线用户列表
-chat = '------Group chat-------'  # 聊天对象, 默认为群聊
 
 class login_window(QtWidgets.QMainWindow, Ui_Form):
     def __init__(self):
@@ -55,6 +54,7 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         super(main_window, self).__init__()
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.r = threading.Thread()
+        self.chat = '------Group chat-------'  # 聊天对象, 默认为群聊
         self.setupUi(self)  # 创建窗体对象
         # self.treeView.setHeaderLabels('Group Chat')
         self.init()
@@ -91,7 +91,6 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
         addr = addr[0] + ':' + str(addr[1])
         if user == '':
             user = addr
-        self.plainTextEdit.moveCursor(QtGui.QTextCursor.End)
         self.plainTextEdit.insertPlainText("Welcome to the chat room!")
         # 开始线程接收信息
         self.r = threading.Thread(target=self.recv)
@@ -101,14 +100,13 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
     def send(self, *args):
         # 没有添加的话发送信息时会提示没有聊天对象
         users.append('------Group chat-------')
-        print(chat)
-        if chat not in users:
+        if self.chat not in users:
             QMessageBox.warning(self, 'Send error', 'There is nobody to talk to!')
             return
-        if chat == user:
+        if self.chat == user:
             QMessageBox.warning(self, 'Send error', 'Cannot talk with yourself in private!')
             return
-        mes = self.plainTextEdit_2.toPlainText() + ':;' + user + ':;' + chat  # 添加聊天对象标记
+        mes = self.plainTextEdit_2.toPlainText() + ':;' + user + ':;' + self.chat  # 添加聊天对象标记
         self.s.send(mes.encode())
         self.plainTextEdit_2.setPlainText('')  # 发送后清空文本框
 
@@ -164,14 +162,13 @@ class main_window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def private(self, item):
         # 私聊功能
-        global chat
         # 获取点击的索引然后得到内容(用户名)
-        chat = item.text()
+        self.chat = item.text()
         # 修改客户端名称
-        if chat == '------Group chat-------':
+        if self.chat == '------Group chat-------':
             self.setWindowTitle(user)
             return
-        ti = user + '  -->  ' + chat
+        ti = user + '  -->  ' + self.chat
         self.setWindowTitle(ti)
 
 

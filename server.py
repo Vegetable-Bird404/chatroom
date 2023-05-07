@@ -38,15 +38,15 @@ class ChatServer(threading.Thread):
 
     # 用于接收所有客户端发送信息的函数
     def tcp_connect(self, conn, addr):
-        # 连接后将用户信息添加到users列表
+        # after connect add user information into users list 连接后将用户信息添加到users列表
         user = conn.recv(1024)                                    # 接收用户名
         user = user.decode()
-
+        # if User already exist
         for i in range(len(users)):
             if user == users[i][1]:
                 print('User already exist')
                 user = '' + user + '_2'
-
+        # if no input username
         if user == 'no':
             user = addr[0] + ':' + str(addr[1])
         users.append((conn, user, addr))
@@ -58,7 +58,6 @@ class ChatServer(threading.Thread):
                 data = conn.recv(1024)
                 data = data.decode()
                 self.recv(data, addr)                         # 保存信息到队列
-            conn.close()
         except:
             print(user + ' Connection lose')
             self.delUsers(conn, addr)                             # 将断开用户移出users
@@ -92,7 +91,7 @@ class ChatServer(threading.Thread):
                 data = ''
                 reply_text = ''
                 message = que.get()                               # 取出队列第一个元素
-                if isinstance(message[1], str):                   # 如果data是str则返回Ture
+                if isinstance(message[1], str):                   # 如果data是str则返回Ture  正常发的消息是str
                     for i in range(len(users)):
                         # user[i][1]是用户名, users[i][2]是addr, 将message[0]改为用户名
                         for j in range(len(users)):
@@ -101,8 +100,7 @@ class ChatServer(threading.Thread):
                                 data = ' ' + users[j][1] + '：' + message[1]
                                 break
                         users[i][0].send(data.encode())
-                # data = data.split(':;')[0]
-                if isinstance(message[1], list):  # 同上
+                if isinstance(message[1], list):  # 连接client时 message[1] --> addr 是一个list
                     # 如果是list则打包后直接发送  
                     data = json.dumps(message[1])
                     for i in range(len(users)):
@@ -111,8 +109,7 @@ class ChatServer(threading.Thread):
                         except:
                             pass
 
-    def run(self):  # 调动start自动执行函数
-
+    def run(self):  # 调动start自动执行函数 重写run函数
         self.s.bind(self.ADDR)
         self.s.listen(5)
         print('Chat server starts running...')
@@ -122,7 +119,6 @@ class ChatServer(threading.Thread):
             conn, addr = self.s.accept()
             t = threading.Thread(target=self.tcp_connect, args=(conn, addr))
             t.start()
-        self.s.close()
 
 if __name__ == '__main__':
     cserver = ChatServer(PORT)
